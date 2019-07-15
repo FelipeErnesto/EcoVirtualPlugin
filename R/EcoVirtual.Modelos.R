@@ -42,12 +42,12 @@
 popExpDb<-function()
 {
   dialogName<-"popExpDb" ### inserido
-  def <- list(dsname="Do_Not_Save", noVar=10, lambVar= 1.05,tmaxVar=10,inttVar=1) # inserido
+  def <- list(noVar=10, lambVar= .5,tmaxVar=10,inttVar=0.2) # inserido
   initial <- getDialog(dialogName, defaults= def)
-  initializeDialog(title = gettextRcmdr("Exponential Growth"))
+  initializeDialog(title = gettextRcmdr("Modelo 1"))
   #### Salva dados
-  dsname <- tclVar(initial$dsname)
-  entryDsname <- tkentry(top, width="20", textvariable=dsname)
+
+#  entryDsname <- tkentry(top, width="20", textvariable=dsname)
   ####
   noVar <- tclVar(initial$noVar)
   noEntry <- tkentry(top, width = "4", textvariable = noVar)
@@ -64,38 +64,30 @@ popExpDb<-function()
   ## #	tkfocus(CommanderWindow())
   ## 	}
   ##########################
-  lambEntry<-tkscale(top, from=0, to=5, showvalue=TRUE, variable=lambVar, resolution=0.01, orient="horizontal") #, command=set.gr)
+  lambEntry<-tkscale(top, from=-1, to=1, showvalue=TRUE, variable=lambVar, resolution=0.01, orient="horizontal") #, command=set.gr)
   inttEntry <- tkscale(top, from=0.01, to=1, showvalue=TRUE, variable=inttVar, resolution=0.01, orient="horizontal")#,command=set.gr)
   ################################################
   onOK <- function() 
   {
     closeDialog()
-    ############ Data name
-    dsnameValue <- trim.blanks(tclvalue(dsname))
-    if (dsnameValue == "Do_Not_Save" | dsnameValue=="") 
-    {
-      command <- paste("popExp(N0 = ", as.numeric(tclvalue(noVar)), ", lamb = ", as.numeric(tclvalue(lambVar)), ", tmax = ", as.numeric(tclvalue(tmaxVar)),", intt = ", as.numeric(tclvalue(inttVar)),")", sep="")
-    }
-    else  
-    {
-      command <- paste(dsnameValue, " <- popExp(N0 = ", as.numeric(tclvalue(noVar)), ", lamb = ", as.numeric(tclvalue(lambVar)), ", tmax = ", as.numeric(tclvalue(tmaxVar)),", intt = ", as.numeric(tclvalue(inttVar)),")", sep="")
-    }
+    command <- paste("popExp(N0 = ", as.numeric(tclvalue(noVar)), ", lamb = ", exp(as.numeric(tclvalue(lambVar))), ", tmax = ", as.numeric(tclvalue(tmaxVar)),", intt = ", as.numeric(tclvalue(inttVar)),")", sep="")  
+    justDoIt("if(max(dev.list())>0){dev.new(max(dev.list()) + 1 )}")
     doItAndPrint(command)
     tkfocus(CommanderWindow())
-    putDialog(dialogName, values = list(dsname=dsnameValue, noVar=as.numeric(tclvalue(noVar)), lambVar=as.numeric(tclvalue(lambVar)), tmaxVar=as.numeric(tclvalue(tmaxVar)), inttVar=as.numeric(tclvalue(inttVar))), resettable = FALSE) ## inserido
+    putDialog(dialogName, values = list(noVar=as.numeric(tclvalue(noVar)), lambVar=as.numeric(tclvalue(lambVar)), tmaxVar=as.numeric(tclvalue(tmaxVar)), inttVar=as.numeric(tclvalue(inttVar))), resettable = FALSE) ## inserido
   }
   #popExp(N0,lamb,tmax, intt= 1) 
   OKCancelHelp(helpSubject = "dynPop", reset=dialogName, apply=dialogName) # modificado
-  tkgrid(tklabel(top, text="Enter name for last simulation data set: "), entryDsname, sticky="e")
+#  tkgrid(tklabel(top, text="Enter name for last simulation data set: "), entryDsname, sticky="e")
   #tkgrid(tklabel(top, text="Simulation Arena Conditions :  ", fg="blue"), sticky="w")
-  tkgrid(tklabel(top, text = "Maximum time"), tmaxEntry, sticky = "e")
-  tkgrid(tklabel(top, text = "Interval time size "), inttEntry, sticky = "e")
-  tkgrid(tklabel(top, text="Species parameters :", fg="blue"), sticky="w")
-  tkgrid(tklabel(top, text = "Initial population size  "), noEntry, sticky = "e")
-  tkgrid(tklabel(top, text = "Population growth rate (lambda)  "), lambEntry, sticky = "e")
+  tkgrid(tklabel(top, text = "Tempo Máximo"), tmaxEntry, sticky = "e")
+  tkgrid(tklabel(top, text = "Intervalo de tempo "), inttEntry, sticky = "e")
+  tkgrid(tklabel(top, text="Parâmetros da espécies :", fg="blue"), sticky="w")
+  tkgrid(tklabel(top, text = "Tamanho populacional inicial  "), noEntry, sticky = "e")
+  tkgrid(tklabel(top, text = "r  "), lambEntry, sticky = "e")
   tkgrid(buttonsFrame, sticky = "w", columnspan = 2)
   #tkgrid(tklabel(top, text="Enter name for data set:"), entryDsname, sticky="e")
-  tkgrid.configure(entryDsname, sticky = "w")
+  #tkgrid.configure(entryDsname, sticky = "w")
   tkgrid.configure(tmaxEntry, sticky = "w")
   tkgrid.configure(inttEntry, sticky = "w")
   tkgrid.configure(noEntry, sticky = "w")
