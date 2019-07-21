@@ -423,7 +423,7 @@ predDb<-function ()
   dialogName<-"predDb" ### 
   def <- list(n01Var=10, n02Var=10, k1Var= 0.9, k2Var= 0.05, alfaVar= 0.1, betaVar= 0.6, tmaxVar=50) # lista de argumentos padrao
   initial <- getDialog(dialogName, defaults= def)
-  initializeDialog(title = gettextRcmdr("Modelo 3"))
+  initializeDialog(title = gettextRcmdr("Modelo 4"))
   n01Var <- tclVar(initial$n01Var)
   n01Entry <- tkentry(top, width = "4", textvariable = n01Var)
   n02Var <- tclVar(initial$n02Var)
